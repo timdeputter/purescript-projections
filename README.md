@@ -8,7 +8,7 @@ Purescript is a pure functional strongly typed programming language which compil
 With purescript-projections you can write your eventstore projections in a pure functional and typesafe
 manner to guarantee more correctness and safety. And to make awesomeness more awesome, purescript ships
 with a haskell style quickcheck implementation, which means you can leverage property-based tests to
-make even more sure your projections are correct.
+make working with projections even more awesome!
 
 ## Installation
 Install purejections with bower:
