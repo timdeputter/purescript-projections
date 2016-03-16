@@ -1,7 +1,7 @@
 {
   "name": "purescript-projections",
-  "description" : "Write your eventstore projections in purescript",
-  "version": "0.0.1",
+  "description": "Write your eventstore projections in purescript",
+  "version": "0.0.2",
   "moduleType": [
     "node"
   ],
