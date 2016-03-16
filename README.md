@@ -34,6 +34,14 @@ In main call runProjection with name of the eventstream, the inital state and th
   main = runProjection "chatroom" {count:0} $ when "UserJoined" handler 
 ```
 
+Now build the project to a single javascript output file and upload the file as projection
+to your eventstore installation:
+
+```sh
+$ pulp build -O --to projection.js
+$ curl -i -d @projection.js http://127.0.0.1:2113/projections/transient?enabled=yes -u admin:changeit -H "Content-Type: application/json"
+```
+
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
