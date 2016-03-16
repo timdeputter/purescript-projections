@@ -1,8 +1,15 @@
 {
-  "name": "purescript-src",
-  "version": "1.0.0",
+  "name": "purescript-projections",
+  "description" : "Write your eventstore projections in purescript",
+  "version": "0.0.1",
   "moduleType": [
     "node"
+  ],
+  "main": [
+    "src/Main.purs"
+  ],
+  "authors": [
+    "Tim de Putter <tim.de.putter83@googlemail.com>"
   ],
   "ignore": [
     "**/.*",
