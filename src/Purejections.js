@@ -25,12 +25,17 @@ exports.foreignAppend = function(folderA){
   }
 }
 
-exports.runProjection = function(streamName){
+
+exports.runProjection = function(eventSource){
   return function(initialState){
     return function(folder){
       var handlers = merge_objects({$init: function(){return initialState;}},folder);
       return function() {
-        fromStream(streamName).when(handlers);
+        if(exports.FromStream != undefined && eventSource instanceof exports.FromStream){
+          fromStream(eventSource.value0).when(handlers);
+        } else {
+          fromAll().when(handlers)
+        }
       }
     }
   }

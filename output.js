@@ -28,12 +28,17 @@ var PS = { };
     }
   }
 
-  exports.runProjection = function(streamName){
+
+  exports.runProjection = function(eventSource){
     return function(initialState){
       return function(folder){
         var handlers = merge_objects({$init: function(){return initialState;}},folder);
         return function() {
-          fromStream(streamName).when(handlers);
+          if(exports.FromStream != undefined && eventSource instanceof exports.FromStream){
+            fromStream(eventSource.value0).when(handlers);
+          } else {
+            fromAll().when(handlers)
+          }
         }
       }
     }
@@ -46,6 +51,16 @@ var PS = { };
   var $foreign = PS["Projections"];
   var Prelude = PS["Prelude"];
   var Control_Monad_Eff = PS["Control.Monad.Eff"];
+  var FromAll = (function () {
+      function FromAll() {
+
+      };
+      FromAll.value = new FromAll();
+      return FromAll;
+  })();
+  var fromAll = FromAll.value;
+  exports["FromAll"] = FromAll;
+  exports["fromAll"] = fromAll;
   exports["foreignAppend"] = $foreign.foreignAppend;
   exports["when"] = $foreign.when;
   exports["runProjection"] = $foreign.runProjection;;
@@ -71,7 +86,7 @@ var PS = { };
           };
       };
   };
-  var main = Projections.runProjection("$stats-127.0.0.1:2113")({
+  var main = Projections.runProjection(Projections.fromAll)({
       count: 0
   })(Projections.foreignAppend(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   exports["main"] = main;
