@@ -32,6 +32,8 @@ exports.runProjection = function(eventSource){
 var getEventsource = function (eventsource) {
   if(isEventsourcetype(eventSource, exports.FromStream)){
     return fromStream(eventSource.value0);
+  } else if(isEventsourcetype(eventSource, exports.FromStreams)){
+    return fromStreams(eventSource.value0);
   } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
     return fromCategory(eventSource.value0).foreachStream();
   } 

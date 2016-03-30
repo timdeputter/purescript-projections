@@ -53,6 +53,8 @@ var PS = { };
   var getEventsource = function (eventsource) {
     if(isEventsourcetype(eventSource, exports.FromStream)){
       return fromStream(eventSource.value0);
+    } else if(isEventsourcetype(eventSource, exports.FromStreams)){
+      return fromStreams(eventSource.value0);
     } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
       return fromCategory(eventSource.value0).foreachStream();
     } 
@@ -102,7 +104,19 @@ var PS = { };
       };
       return ForEachInCategory;
   })();
+  var FromStreams = (function () {
+      function FromStreams(value0) {
+          this.value0 = value0;
+      };
+      FromStreams.create = function (value0) {
+          return new FromStreams(value0);
+      };
+      return FromStreams;
+  })();
   var semigroupFoldE = new Prelude.Semigroup($foreign.foreignAppend);
+  var fromStreams = function (streams) {
+      return new FromStreams(streams);
+  };
   var fromStream = function (streamname) {
       return new FromStream(streamname);
   };
@@ -113,6 +127,8 @@ var PS = { };
   exports["FromStream"] = FromStream;
   exports["FromAll"] = FromAll;
   exports["ForEachInCategory"] = ForEachInCategory;
+  exports["FromStreams"] = FromStreams;
+  exports["fromStreams"] = fromStreams;
   exports["forEachInCategory"] = forEachInCategory;
   exports["fromAll"] = fromAll;
   exports["fromStream"] = fromStream;
@@ -141,6 +157,9 @@ var PS = { };
           };
       };
   };
+  var fromStreamsProjections = Projections.runProjection(Projections.fromStreams([ "figo", "gofi" ]))({
+      count: 0
+  })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   var fromStreamProjections = Projections.runProjection(Projections.fromStream("figo"))({
       count: 0
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
@@ -152,6 +171,7 @@ var PS = { };
       count: 0
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   exports["main"] = main;
+  exports["fromStreamsProjections"] = fromStreamsProjections;
   exports["forEachInCategoryProjections"] = forEachInCategoryProjections;
   exports["fromStreamProjections"] = fromStreamProjections;
   exports["fromAllProjections"] = fromAllProjections;

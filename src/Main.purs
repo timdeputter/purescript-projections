@@ -2,7 +2,7 @@ module Main where
 
 import Prelude (Unit, (+), ($), (<>))
 import Control.Monad.Eff (Eff)
-import Projections (Projection, when, runProjection, fromAll, fromStream, forEachInCategory)
+import Projections (Projection, when, runProjection, fromAll, fromStream, forEachInCategory, fromStreams)
 
 -- Example state type
 type State = {count :: Int}
@@ -23,6 +23,9 @@ fromStreamProjections = runProjection (fromStream "figo") {count:0} $ when "$sta
 
 forEachInCategoryProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
 forEachInCategoryProjections = runProjection (forEachInCategory "figo") {count:0} $ when "$statsCollected" handlerA <> when "Figo" handlerB
+
+fromStreamsProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
+fromStreamsProjections = runProjection (fromStreams ["figo", "gofi"]) {count:0} $ when "$statsCollected" handlerA <> when "Figo" handlerB
 
 main :: forall t9. Eff ( eventFold :: Projection | t9) Unit
 main = fromAllProjections

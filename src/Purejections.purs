@@ -3,7 +3,7 @@ module Projections where
 import Prelude (Unit, class Semigroup)
 import Control.Monad.Eff (Eff)
 
-data EventSource = FromStream String | FromAll | ForEachInCategory String
+data EventSource = FromStream String | FromAll | ForEachInCategory String | FromStreams (Array String)
 
 fromStream :: String -> EventSource
 fromStream streamname = FromStream streamname
@@ -13,6 +13,9 @@ fromAll = FromAll
 
 forEachInCategory :: String -> EventSource
 forEachInCategory category = ForEachInCategory category
+
+fromStreams :: Array String -> EventSource
+fromStreams streams = FromStreams streams
 
 foreign import data Projection :: !
 foreign import data FoldE :: * -> *
