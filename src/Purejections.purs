@@ -1,6 +1,6 @@
 module Projections where
 
-import Prelude (Unit)
+import Prelude (Unit, class Semigroup)
 import Control.Monad.Eff (Eff)
 
 data EventSource = FromStream String | FromAll
@@ -20,4 +20,5 @@ foreign import when :: forall e s. String -> (s -> e -> s) -> FoldE s
 
 foreign import foreignAppend :: forall s. FoldE s -> FoldE s -> FoldE s
 
-infix 5 foreignAppend as +++
+instance semigroupFoldE :: Semigroup (FoldE s) where
+append = foreignAppend
