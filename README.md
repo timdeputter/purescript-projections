@@ -31,7 +31,7 @@ then write a function which takes an event and a state and produces a new state:
 ```
 In main call runProjection with name of the eventstream, the inital state and the handler like this:
 ```purescript
-  main = runProjection "chatroom" {count:0} $ when "UserJoined" handler 
+  main = runProjection (fromStream "chatroom") {count:0} $ when "UserJoined" handler 
 ```
 
 Now build the project to a single javascript output file and upload the file as projection
