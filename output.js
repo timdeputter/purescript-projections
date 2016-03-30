@@ -33,33 +33,41 @@ var PS = { };
     };
   };
 
-  var merge_objects = function (obj1,obj2){
+  exports.foreignAppend = function(folderA){
+    return function(folderB){
+      return mergeObjects(folderA, folderB);
+    }
+  }
+
+  exports.runProjection = function(eventSource){
+    return function(initialState){
+      return function(folder){
+        var handlers = mergeObjects({$init: function(){return initialState;}},folder);
+        return function() {
+          getEventsource(eventSource).when(handlers);
+        }
+      }
+    }
+  }
+
+  var getEventsource = function (eventsource) {
+    if(isEventsourcetype(eventSource, exports.FromStream)){
+      return fromStream(eventSource.value0);
+    } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
+      return fromCategory(eventSource.value0).foreachStream();
+    } 
+    return fromAll().when(handlers);
+  }
+
+  var mergeObjects = function (obj1,obj2){
     var obj3 = {};
     for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
     for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
     return obj3;
   }
 
-  exports.foreignAppend = function(folderA){
-    return function(folderB){
-      return merge_objects(folderA, folderB);
-    }
-  }
-
-
-  exports.runProjection = function(eventSource){
-    return function(initialState){
-      return function(folder){
-        var handlers = merge_objects({$init: function(){return initialState;}},folder);
-        return function() {
-          if(exports.FromStream != undefined && eventSource instanceof exports.FromStream){
-            fromStream(eventSource.value0).when(handlers);
-          } else {
-            fromAll().when(handlers)
-          }
-        }
-      }
-    }
+  var isEventsourcetype = function(eventsource, expectedType) {
+    return eventSource != undefined && eventSource instanceof expectedType;
   }
  
 })(PS["Projections"] = PS["Projections"] || {});
@@ -85,13 +93,27 @@ var PS = { };
       FromAll.value = new FromAll();
       return FromAll;
   })();
+  var ForEachInCategory = (function () {
+      function ForEachInCategory(value0) {
+          this.value0 = value0;
+      };
+      ForEachInCategory.create = function (value0) {
+          return new ForEachInCategory(value0);
+      };
+      return ForEachInCategory;
+  })();
   var semigroupFoldE = new Prelude.Semigroup($foreign.foreignAppend);
   var fromStream = function (streamname) {
       return new FromStream(streamname);
   };
   var fromAll = FromAll.value;
+  var forEachInCategory = function (category) {
+      return new ForEachInCategory(category);
+  };
   exports["FromStream"] = FromStream;
   exports["FromAll"] = FromAll;
+  exports["ForEachInCategory"] = ForEachInCategory;
+  exports["forEachInCategory"] = forEachInCategory;
   exports["fromAll"] = fromAll;
   exports["fromStream"] = fromStream;
   exports["semigroupFoldE"] = semigroupFoldE;
@@ -126,7 +148,11 @@ var PS = { };
       count: 0
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   var main = fromAllProjections;
+  var forEachInCategoryProjections = Projections.runProjection(Projections.forEachInCategory("figo"))({
+      count: 0
+  })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   exports["main"] = main;
+  exports["forEachInCategoryProjections"] = forEachInCategoryProjections;
   exports["fromStreamProjections"] = fromStreamProjections;
   exports["fromAllProjections"] = fromAllProjections;
   exports["handlerB"] = handlerB;
