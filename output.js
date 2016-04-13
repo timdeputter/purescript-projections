@@ -33,6 +33,12 @@ var PS = { };
     };
   };
 
+  exports.whenAny = function(eventhandler) {
+    return {$any : function(s,e) {
+      return eventhandler(s)(e);
+    }};
+  };
+
   exports.foreignAppend = function(folderA){
     return function(folderB){
       return mergeObjects(folderA, folderB);
@@ -50,7 +56,7 @@ var PS = { };
     }
   }
 
-  var getEventsource = function (eventsource) {
+  var getEventsource = function (eventSource) {
     if(isEventsourcetype(eventSource, exports.FromStream)){
       return fromStream(eventSource.value0);
     } else if(isEventsourcetype(eventSource, exports.FromStreams)){
@@ -58,18 +64,18 @@ var PS = { };
     } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
       return fromCategory(eventSource.value0).foreachStream();
     } 
-    return fromAll().when(handlers);
+    return fromAll();
   }
 
   var mergeObjects = function (obj1,obj2){
     var obj3 = {};
     for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+    for (var attrname2 in obj2) { obj3[attrname2] = obj2[attrname2]; }
     return obj3;
   }
 
   var isEventsourcetype = function(eventsource, expectedType) {
-    return eventSource != undefined && eventSource instanceof expectedType;
+    return eventsource !== undefined && eventsource instanceof expectedType;
   }
  
 })(PS["Projections"] = PS["Projections"] || {});
@@ -133,6 +139,7 @@ var PS = { };
   exports["fromAll"] = fromAll;
   exports["fromStream"] = fromStream;
   exports["semigroupFoldE"] = semigroupFoldE;
+  exports["whenAny"] = $foreign.whenAny;
   exports["when"] = $foreign.when;
   exports["runProjection"] = $foreign.runProjection;;
  
@@ -157,6 +164,10 @@ var PS = { };
           };
       };
   };
+  var whenAnyEvent = Projections.runProjection(Projections.fromAll)({
+      count: 0
+  })(Projections.whenAny(handlerA));
+  var main = whenAnyEvent;
   var fromStreamsProjections = Projections.runProjection(Projections.fromStreams([ "figo", "gofi" ]))({
       count: 0
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
@@ -165,12 +176,12 @@ var PS = { };
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   var fromAllProjections = Projections.runProjection(Projections.fromAll)({
       count: 0
-  })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
-  var main = fromAllProjections;
+  })(Projections.when("$statsCollected")(handlerA));
   var forEachInCategoryProjections = Projections.runProjection(Projections.forEachInCategory("figo"))({
       count: 0
   })(Prelude["<>"](Projections.semigroupFoldE)(Projections.when("$statsCollected")(handlerA))(Projections.when("Figo")(handlerB)));
   exports["main"] = main;
+  exports["whenAnyEvent"] = whenAnyEvent;
   exports["fromStreamsProjections"] = fromStreamsProjections;
   exports["forEachInCategoryProjections"] = forEachInCategoryProjections;
   exports["fromStreamProjections"] = fromStreamProjections;

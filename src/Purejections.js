@@ -12,6 +12,12 @@ exports.when = function(eventname) {
   };
 };
 
+exports.whenAny = function(eventhandler) {
+  return {$any : function(s,e) {
+    return eventhandler(s)(e);
+  }};
+};
+
 exports.foreignAppend = function(folderA){
   return function(folderB){
     return mergeObjects(folderA, folderB);
@@ -29,7 +35,7 @@ exports.runProjection = function(eventSource){
   }
 }
 
-var getEventsource = function (eventsource) {
+var getEventsource = function (eventSource) {
   if(isEventsourcetype(eventSource, exports.FromStream)){
     return fromStream(eventSource.value0);
   } else if(isEventsourcetype(eventSource, exports.FromStreams)){
@@ -37,16 +43,16 @@ var getEventsource = function (eventsource) {
   } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
     return fromCategory(eventSource.value0).foreachStream();
   } 
-  return fromAll().when(handlers);
+  return fromAll();
 }
 
 var mergeObjects = function (obj1,obj2){
   var obj3 = {};
   for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-  for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
+  for (var attrname2 in obj2) { obj3[attrname2] = obj2[attrname2]; }
   return obj3;
 }
 
 var isEventsourcetype = function(eventsource, expectedType) {
-  return eventSource != undefined && eventSource instanceof expectedType;
+  return eventsource !== undefined && eventsource instanceof expectedType;
 }
