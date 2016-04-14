@@ -1,6 +1,6 @@
 module Main where
 
-import Prelude (Unit, (+), ($), (<>))
+import Prelude (Unit, (+), ($))
 import Control.Monad.Eff (Eff)
 import Projections (Projection, when, whenAny, runProjection, fromAll, fromStream, forEachInCategory, fromStreams)
 
@@ -19,13 +19,13 @@ fromAllProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
 fromAllProjections = runProjection fromAll {count:0} $ when "$statsCollected" handlerA 
 
 fromStreamProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
-fromStreamProjections = runProjection (fromStream "figo") {count:0} $ when "$statsCollected" handlerA <> when "Figo" handlerB
+fromStreamProjections = runProjection (fromStream "$stats-127.0.0.1:2113") {count:0} $ when "$statsCollected" handlerA
 
 forEachInCategoryProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
-forEachInCategoryProjections = runProjection (forEachInCategory "figo") {count:0} $ when "$statsCollected" handlerA <> when "Figo" handlerB
+forEachInCategoryProjections = runProjection (forEachInCategory "$stats") {count:0} $ when "$statsCollected" handlerA
 
 fromStreamsProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
-fromStreamsProjections = runProjection (fromStreams ["figo", "gofi"]) {count:0} $ when "$statsCollected" handlerA <> when "Figo" handlerB
+fromStreamsProjections = runProjection (fromStreams ["$stats-127.0.0.1:2113", "$projections-$master"]) {count:0} $ when "$statsCollected" handlerA
 
 whenAnyEvent :: forall t. Eff (eventFold :: Projection | t) Unit
 whenAnyEvent = runProjection fromAll {count:0} $ whenAny handlerA
