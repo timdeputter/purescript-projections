@@ -42,6 +42,32 @@ $ pulp build -O --to projection.js
 $ curl -i -d @projection.js http://127.0.0.1:2113/projections/transient?enabled=yes -u admin:changeit -H "Content-Type: application/json"
 ```
 
+## Selecting streams
+
+There is a variaty of ways to select events from different streams.
+
+### Single stream
+To select events from a single stream call fromStream with the name of the stream to select the events from:
+```purescript
+  fromStream "chatroom"
+```
+
+### Multiple streams
+To select events from multiple streams call fromStreams with an Array of the names of the streams:
+```purescript
+  fromStreams ["chatroom", "lobby"]
+```
+
+### From categorpy
+To select the events from a category call fromCategory with the name of the category. The projection is
+run for each stream in the category.
+```purescript
+  fromCategory "category"
+```
+
+### From all streams
+The function fromAll simply runs the projection for all streams in the database.
+
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
