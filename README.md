@@ -11,7 +11,7 @@ with a haskell style quickcheck implementation, which means you can leverage pro
 make working with projections even more awesome!
 
 ## Installation
-Install purejections with bower:
+Install purescript-projections with bower:
 
 ```sh
 $ bower install purescript-projections
