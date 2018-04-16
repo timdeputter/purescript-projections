@@ -1,16 +1,5 @@
 {
-  "name": "purescript-projections",
-  "description": "Write your eventstore projections in purescript",
-  "version": "0.1.0",
-  "moduleType": [
-    "node"
-  ],
-  "main": [
-    "src/Main.purs"
-  ],
-  "authors": [
-    "Tim de Putter <tim.de.putter83@googlemail.com>"
-  ],
+  "name": "vagrant",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -18,13 +7,15 @@
     "output"
   ],
   "dependencies": {
+    "purescript-prelude": "^3.3.0",
     "purescript-console": "^3.0.0"
-    "purescript-record": "^0.2.1"
-    "purescript-prelude": "^3.1.0"
-    "purescript-eff": "^3.1.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^2.0.0"
     "purescript-psci-support": "^3.0.0"
+  },
+  "resolutions": {
+    "purescript-console": "^3.0.0",
+    "purescript-eff": "^3.0.0",
+    "purescript-prelude": "^3.0.0"
   }
 }
