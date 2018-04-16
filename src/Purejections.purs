@@ -2,6 +2,7 @@ module Projections where
 
 import Prelude (Unit, class Semigroup)
 import Control.Monad.Eff (Eff)
+import Data.Record.Builder(build, insert)
 
 data EventSource = FromStream String | FromAll | ForEachInCategory String | FromStreams (Array String)
 

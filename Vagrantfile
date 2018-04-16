@@ -5,6 +5,7 @@ require 'vagrant/util/platform'
 
 # Vagrantfile API/syntax version.
 VAGRANTFILE_API_VERSION = '2'
+Vagrant::DEFAULT_SERVER_URL.replace('https://vagrantcloud.com')
 
 # Load files in the support directory
 #Dir.glob('support/**/*.rb').each {|file| load file }
@@ -17,7 +18,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     cfg.vm.box = 'ubuntu/trusty64'
 
     cfg.vm.provision :shell, :path => 'scripts/common.sh'
-    cfg.vm.provision :shell, :path => 'scripts/haskell.sh'
     cfg.vm.provision :shell, :path => 'scripts/javascript.sh'
     cfg.vm.provision :shell, :path => 'scripts/purescript.sh'
 

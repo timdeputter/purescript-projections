@@ -18,6 +18,13 @@
     "output"
   ],
   "dependencies": {
-    "purescript-console": "^0.1.0"
+    "purescript-console": "^3.0.0"
+    "purescript-record": "^0.2.1"
+    "purescript-prelude": "^3.1.0"
+    "purescript-eff": "^3.1.0"
+  },
+  "devDependencies": {
+    "purescript-psci-support": "^2.0.0"
+    "purescript-psci-support": "^3.0.0"
   }
 }
