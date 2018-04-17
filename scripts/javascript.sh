@@ -4,9 +4,6 @@ set -e
 
 echo 'Installing JavaScript development tools...'
 
-sudo curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
-sudo apt-get install -y nodejs
-sudo npm install npm -g
-
-sudo npm install -g grunt grunt-cli
-sudo npm install -g bower
+sudo curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.9/install.sh | bash
+sudo nvm install node
+sudo npm install npm@latest -g
