@@ -58,7 +58,7 @@ To select events from multiple streams call fromStreams with an Array of the nam
   fromStreams ["chatroom", "lobby"]
 ```
 
-### From categorpy
+### From category
 To select the events from a category call fromCategory with the name of the category. The projection is
 run for each stream in the category.
 ```purescript
