@@ -3,5 +3,5 @@
 set -e
 
 echo 'Installing PureScript via npm...'
-sudo npm install -g purescript --unsafe-perm=true
-sudo npm install -g pulp bower
+npm install -g purescript
+npm install -g pulp bower

@@ -6,4 +6,4 @@ echo 'Installing common Ubuntu components...'
 
 sudo apt-get -y update
 
-sudo apt-get -y install build-essential 
+sudo apt-get -y install build-essential git

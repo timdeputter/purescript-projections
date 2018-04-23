@@ -17,9 +17,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     cfg.vm.box = 'ubuntu/trusty64'
 
-    cfg.vm.provision :shell, :path => 'scripts/common.sh'
-    cfg.vm.provision :shell, :path => 'scripts/javascript.sh'
-    cfg.vm.provision :shell, :path => 'scripts/purescript.sh'
+    cfg.vm.provision :shell, :path => 'scripts/common.sh', privileged: false
+    cfg.vm.provision :shell, :path => 'scripts/javascript.sh', privileged: false
+    cfg.vm.provision :shell, :path => 'scripts/purescript.sh', privileged: false
 
     cfg.vm.provider 'virtualbox' do |v|
       v.name = 'purejections'

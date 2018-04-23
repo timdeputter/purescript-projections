@@ -1,8 +1,7 @@
 module Projections where
 
 import Prelude (Unit, class Semigroup)
-import Control.Monad.Eff (Eff)
-import Data.Record.Builder(build, insert)
+import Control.Monad.Eff (Eff, kind Effect)
 
 data EventSource = FromStream String | FromAll | ForEachInCategory String | FromStreams (Array String)
 
@@ -18,8 +17,8 @@ forEachInCategory category = ForEachInCategory category
 fromStreams :: Array String -> EventSource
 fromStreams streams = FromStreams streams
 
-foreign import data Projection :: !
-foreign import data FoldE :: * -> *
+foreign import data Projection :: Effect
+foreign import data FoldE :: Type -> Type
 
 
 foreign import runProjection :: forall s eff. EventSource -> s -> FoldE s -> Eff (eventFold :: Projection | eff) Unit
