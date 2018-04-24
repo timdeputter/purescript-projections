@@ -11,8 +11,8 @@ fromStream streamname = FromStream streamname
 fromAll :: EventSource
 fromAll = FromAll
 
-forEachInCategory :: String -> EventSource
-forEachInCategory category = ForEachInCategory category
+fromCategory :: String -> EventSource
+fromCategory category = ForEachInCategory category
 
 fromStreams :: Array String -> EventSource
 fromStreams streams = FromStreams streams
