@@ -68,6 +68,16 @@ run for each stream in the category.
 ### From all streams
 The function fromAll simply runs the projection for all streams in the database.
 
+## Handling events
+Once the source of events is defined we can specifiy how to derive state from them, or - to say it in other words - 
+how to 'fold' the events
+
+### When
+When produces eventhandler for events of the given eventname by applying a given function which takes a state s, an event e and produces a new state s.
+```purescript
+  when("accountCreated", \s e -> s + e)
+```
+
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
