@@ -23,10 +23,17 @@ var PS = {};
 
   exports.runProjection = function(eventSource){
     return function(initialState){
-      return function(folder){
-        var handlers = mergeObjects({$init: function(){return initialState;}},folder);
-        return function() {
-          getEventsource(eventSource).when(handlers);
+      return function(options){
+        return function(folder){
+          var handlers = mergeObjects({$init: function(){return initialState;}},folder);
+          return function() {
+            if(isOption(options,exports.OutputState)){
+              options({resultStreamName: options.value0})
+              getEventsource(eventSource).when(handlers).outputState();
+            } else {
+              getEventsource(eventSource).when(handlers);
+            }
+          }
         }
       }
     }
@@ -39,6 +46,10 @@ var PS = {};
       return fromStreams(eventSource.value0);
     } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
       return fromCategory(eventSource.value0).foreachStream();
+    } else if(isEventsourcetype(eventSource, exports.FromCategory)){
+      return fromCategory(eventSource.value0);
+    } else if(isEventsourcetype(eventSource, exports.ForEach)){
+      return fromAll().foreachStream();
     } 
     return fromAll();
   }
@@ -60,7 +71,14 @@ var PS = {};
   var $foreign = PS["Projections"];
   var Control_Monad_Eff = PS["Control.Monad.Eff"];
   var Data_Semigroup = PS["Data.Semigroup"];
-  var Prelude = PS["Prelude"];        
+  var Prelude = PS["Prelude"];
+  var DefaultOptions = (function () {
+      function DefaultOptions() {
+
+      };
+      DefaultOptions.value = new DefaultOptions();
+      return DefaultOptions;
+  })();
   var FromStream = (function () {
       function FromStream(value0) {
           this.value0 = value0;
@@ -77,14 +95,14 @@ var PS = {};
       FromAll.value = new FromAll();
       return FromAll;
   })();
-  var ForEachInCategory = (function () {
-      function ForEachInCategory(value0) {
+  var FromCategory = (function () {
+      function FromCategory(value0) {
           this.value0 = value0;
       };
-      ForEachInCategory.create = function (value0) {
-          return new ForEachInCategory(value0);
+      FromCategory.create = function (value0) {
+          return new FromCategory(value0);
       };
-      return ForEachInCategory;
+      return FromCategory;
   })();
   var FromStreams = (function () {
       function FromStreams(value0) {
@@ -101,17 +119,18 @@ var PS = {};
   var fromStream = function (streamname) {
       return new FromStream(streamname);
   };
-  var fromAll = FromAll.value;
-  var forEachInCategory = function (category) {
-      return new ForEachInCategory(category);
+  var fromCategory = function (category) {
+      return new FromCategory(category);
   };
+  var fromAll = FromAll.value;
   exports["FromStream"] = FromStream;
   exports["FromAll"] = FromAll;
-  exports["ForEachInCategory"] = ForEachInCategory;
+  exports["FromCategory"] = FromCategory;
   exports["FromStreams"] = FromStreams;
+  exports["DefaultOptions"] = DefaultOptions;
   exports["fromStream"] = fromStream;
   exports["fromAll"] = fromAll;
-  exports["forEachInCategory"] = forEachInCategory;
+  exports["fromCategory"] = fromCategory;
   exports["fromStreams"] = fromStreams;
   exports["runProjection"] = $foreign.runProjection;
   exports["when"] = $foreign.when;
@@ -141,20 +160,20 @@ var PS = {};
   };
   var whenAnyEvent = Projections.runProjection(Projections.fromAll)({
       count: 0
-  })(Projections.whenAny(handlerA));
+  })(Projections.DefaultOptions.value)(Projections.whenAny(handlerA));
   var main = whenAnyEvent;
   var fromStreamsProjections = Projections.runProjection(Projections.fromStreams([ "$stats-127.0.0.1:2113", "$projections-$master" ]))({
       count: 0
-  })(Projections.when("$statsCollected")(handlerA));
+  })(Projections.DefaultOptions.value)(Projections.when("$statsCollected")(handlerA));
   var fromStreamProjections = Projections.runProjection(Projections.fromStream("$stats-127.0.0.1:2113"))({
       count: 0
-  })(Projections.when("$statsCollected")(handlerA));
+  })(Projections.DefaultOptions.value)(Projections.when("$statsCollected")(handlerA));
   var fromAllProjections = Projections.runProjection(Projections.fromAll)({
       count: 0
-  })(Projections.when("$statsCollected")(handlerA));
-  var forEachInCategoryProjections = Projections.runProjection(Projections.forEachInCategory("$stats"))({
+  })(Projections.DefaultOptions.value)(Projections.when("$statsCollected")(handlerA));
+  var forEachInCategoryProjections = Projections.runProjection(Projections.fromCategory("$stats"))({
       count: 0
-  })(Projections.when("$statsCollected")(handlerA));
+  })(Projections.DefaultOptions.value)(Projections.when("$statsCollected")(handlerA));
   exports["handlerA"] = handlerA;
   exports["handlerB"] = handlerB;
   exports["fromAllProjections"] = fromAllProjections;

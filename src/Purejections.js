@@ -26,10 +26,17 @@ exports.foreignAppend = function(folderA){
 
 exports.runProjection = function(eventSource){
   return function(initialState){
-    return function(folder){
-      var handlers = mergeObjects({$init: function(){return initialState;}},folder);
-      return function() {
-        getEventsource(eventSource).when(handlers);
+    return function(options){
+      return function(folder){
+        var handlers = mergeObjects({$init: function(){return initialState;}},folder);
+        return function() {
+          if(isOption(options,exports.OutputState)){
+            options({resultStreamName: options.value0})
+            getEventsource(eventSource).when(handlers).outputState();
+          } else {
+            getEventsource(eventSource).when(handlers);
+          }
+        }
       }
     }
   }
@@ -42,6 +49,10 @@ var getEventsource = function (eventSource) {
     return fromStreams(eventSource.value0);
   } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
     return fromCategory(eventSource.value0).foreachStream();
+  } else if(isEventsourcetype(eventSource, exports.FromCategory)){
+    return fromCategory(eventSource.value0);
+  } else if(isEventsourcetype(eventSource, exports.ForEach)){
+    return fromAll().foreachStream();
   } 
   return fromAll();
 }

@@ -59,14 +59,16 @@ To select events from multiple streams call fromStreams with an Array of the nam
 ```
 
 ### From category
-To select the events from a category call fromCategory with the name of the category. The projection is
-run for each stream in the category.
+To select the events from a category call fromCategory with the name of the category. 
+To run a seperate projection for each category call forEachInCategory.
 ```purescript
   fromCategory "category"
+  forEachInCategory "category"
 ```
 
 ### From all streams
 The function fromAll simply runs the projection for all streams in the database.
+ForEach runs a seperate projection for each category.
 
 ## Handling events
 Once the source of events is defined we can specifiy how to derive state from them, or - to say it in other words - 
