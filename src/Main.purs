@@ -22,7 +22,7 @@ fromStreamProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
 fromStreamProjections = runProjection (fromStream "$stats-127.0.0.1:2113") {count:0} $ when "$statsCollected" handlerA
 
 forEachInCategoryProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
-forEachInCategoryProjections = runProjection (forEachInCategory "$stats") {count:0} $ when "$statsCollected" handlerA
+forEachInCategoryProjections = runProjection (fromCategory "$stats") {count:0} $ when "$statsCollected" handlerA
 
 fromStreamsProjections :: forall t9. Eff ( eventFold :: Projection | t9) Unit
 fromStreamsProjections = runProjection (fromStreams ["$stats-127.0.0.1:2113", "$projections-$master"]) {count:0} $ when "$statsCollected" handlerA
