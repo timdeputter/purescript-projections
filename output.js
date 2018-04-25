@@ -71,7 +71,19 @@ var PS = {};
   var $foreign = PS["Projections"];
   var Control_Monad_Eff = PS["Control.Monad.Eff"];
   var Data_Semigroup = PS["Data.Semigroup"];
-  var Prelude = PS["Prelude"];
+  var Prelude = PS["Prelude"];        
+  var OutputState = (function () {
+      function OutputState(value0, value1) {
+          this.value0 = value0;
+          this.value1 = value1;
+      };
+      OutputState.create = function (value0) {
+          return function (value1) {
+              return new OutputState(value0, value1);
+          };
+      };
+      return OutputState;
+  })();
   var DefaultOptions = (function () {
       function DefaultOptions() {
 
@@ -113,6 +125,9 @@ var PS = {};
       };
       return FromStreams;
   })();                                                                     
+  var outputState = function (statename) {
+      return new OutputState(statename, DefaultOptions.value);
+  };
   var fromStreams = function (streams) {
       return new FromStreams(streams);
   };
@@ -127,7 +142,9 @@ var PS = {};
   exports["FromAll"] = FromAll;
   exports["FromCategory"] = FromCategory;
   exports["FromStreams"] = FromStreams;
+  exports["OutputState"] = OutputState;
   exports["DefaultOptions"] = DefaultOptions;
+  exports["outputState"] = outputState;
   exports["fromStream"] = fromStream;
   exports["fromAll"] = fromAll;
   exports["fromCategory"] = fromCategory;
@@ -158,10 +175,13 @@ var PS = {};
           };
       };
   };
+  var outputStateProjection = Projections.runProjection(Projections.fromAll)({
+      count: 0
+  })(Projections.outputState("state"))(Projections.whenAny(handlerA));
+  var main = outputStateProjection;
   var whenAnyEvent = Projections.runProjection(Projections.fromAll)({
       count: 0
   })(Projections.DefaultOptions.value)(Projections.whenAny(handlerA));
-  var main = whenAnyEvent;
   var fromStreamsProjections = Projections.runProjection(Projections.fromStreams([ "$stats-127.0.0.1:2113", "$projections-$master" ]))({
       count: 0
   })(Projections.DefaultOptions.value)(Projections.when("$statsCollected")(handlerA));
@@ -181,6 +201,7 @@ var PS = {};
   exports["forEachInCategoryProjections"] = forEachInCategoryProjections;
   exports["fromStreamsProjections"] = fromStreamsProjections;
   exports["whenAnyEvent"] = whenAnyEvent;
+  exports["outputStateProjection"] = outputStateProjection;
   exports["main"] = main;
 })(PS["Main"] = PS["Main"] || {});
 PS["Main"].main();

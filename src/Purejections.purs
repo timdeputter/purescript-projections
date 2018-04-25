@@ -7,6 +7,8 @@ data EventSource = FromStream String | FromAll | ForEach | FromCategory String |
 
 data ProjectionOptions = OutputState String ProjectionOptions | DefaultOptions
 
+outputState :: String -> ProjectionOptions
+outputState statename = OutputState statename DefaultOptions
 
 fromStream :: String -> EventSource
 fromStream streamname = FromStream streamname
@@ -16,6 +18,9 @@ forEach = ForEach
 
 fromAll :: EventSource
 fromAll = FromAll
+
+defaultOptions :: ProjectionOptions
+defaultOptions = DefaultOptions
 
 forEachInCategory :: String -> EventSource
 forEachInCategory category = ForEachInCategory category
