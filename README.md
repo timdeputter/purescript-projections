@@ -77,7 +77,7 @@ how to 'fold' the events
 ### When
 When produces eventhandler for events of the given eventname by applying a given function which takes a state s, an event e and produces a new state s. The following example derives the number of created accounts from the 'accountCreated' event.
 ```purescript
-  when("accountCreated", \s e -> {count: s.count+1})
+  when "accountCreated" (\s e -> {count: s.count+1})
 ```
 
 ## License
