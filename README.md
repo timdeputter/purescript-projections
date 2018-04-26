@@ -80,6 +80,32 @@ When produces eventhandler for events of the given eventname by applying a given
   when "accountCreated" (\s e -> {count: s.count+1})
 ```
 
+## Controlling projection properties
+The projections behaviour is defined by four basic properties, these are:
+
+
+| Property          | description                                   | default  |
+| ----------------- | --------------------------------------------- | -------- |
+| resultstream name | The name of the outputstate stream.            | $projections-{projection-name}-result |
+| include links     | Links to events in the source stream are processed. |   false |
+| reorder events    | Process events by storing a buffer of events ordered by their prepare position.     |    false |
+| processinglag     | 	 	When reorderEvents is turned on, this value is used to compare the total milliseconds between the first and last events in the buffer and if the value is equal or greater, the events in the buffer will be processed. The buffer is an ordered list of events.  | 500ms |
+
+These properties are either controled via an options parameter passed to runProjections for general configurations (like resultstream name) or they are directly passed to the functions whichs behaviour is altered by the configuration parameter.
+
+### default Options
+If you just want the default behaviour of projections pass defaultOptions to runProjections:
+```purescript
+  runProjection source initialState defaultOptions fold
+```
+
+### output state
+This controls wether an outputstate stream should be created and which name this stream should have:
+```purescript
+  runProjection source initialState (outputState "projection-state") fold
+```
+
+
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
