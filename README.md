@@ -107,6 +107,19 @@ When produces eventhandler for events of the given eventname by applying a given
   when "accountCreated" (\s e -> {count: s.count+1})
 ```
 
+### When any
+WhenAny can be used to define an eventhandler for any event.
+```purescript
+  whenAny (\s e -> {count: s.count+1})
+```
+
+### Combining eventhandlers
+FoldE is an instance of Semigroup, so 
+you can define multiple eventhandlers and then combine them:
+```purescript
+  when "accountCreated" (\s e -> {count: s.count+1}) <> when "accountClosed" (\s e -> {count: s.count-1})
+```
+
 ## License
 
 Check [LICENSE](LICENSE) file for more information.
