@@ -26,15 +26,14 @@ exports.foreignAppend = function(folderA){
 
 exports.runProjection = function(eventSource){
   return function(initialState){
-    return function(options){
+    return function(opts){
       return function(folder){
         var handlers = mergeObjects({$init: function(){return initialState;}},folder);
+        options(getOptions(opts,eventsource))
         return function() {
-          if(isOption(options,exports.OutputState)){
-            options({resultStreamName: options.value0});
-            getEventsource(eventSource).when(handlers).outputState();
-          } else {
-            getEventsource(eventSource).when(handlers);
+          var proj = getEventsource(eventSource).when(handlers);
+          if(shouldOutputState(opts)){
+            proj.outputState();
           }
         };
       };
@@ -42,15 +41,26 @@ exports.runProjection = function(eventSource){
   };
 };
 
-var isOption = function(options, expectedType){
-  return options !== undefined && expectedType !== undefined && options instanceof expectedType;
+var getOptions = function(opts, eventsource){
+  if(isEventsourcetype(eventsource, exports.FromStreams)){
+    return {
+      resultStreamName: opts.resultStreamName,
+      reorderEvents: eventsource.value0.reorderEvents,
+      processingLag: eventsource.value0.processingLag 
+    };
+  }
+  return {resultStreamName: opts.resultStreamName}
+}
+
+var shouldOutputState = function(opts){
+  return opts.outputState;
 };
 
 var getEventsource = function (eventSource) {
   if(isEventsourcetype(eventSource, exports.FromStream)){
     return fromStream(eventSource.value0);
   } else if(isEventsourcetype(eventSource, exports.FromStreams)){
-    return fromStreams(eventSource.value0);
+    return fromStreams(eventSource.value1);
   } else if(isEventsourcetype(eventSource, exports.ForEachInCategory)){
     return fromCategory(eventSource.value0).foreachStream();
   } else if(isEventsourcetype(eventSource, exports.FromCategory)){
