@@ -54,7 +54,7 @@ The projections behaviour is defined by four basic properties, these are:
 | reorder events    | Process events by storing a buffer of events ordered by their prepare position.     |    false |
 | processinglag     | 	 	When reorderEvents is turned on, this value is used to compare the total milliseconds between the first and last events in the buffer and if the value is equal or greater, the events in the buffer will be processed. The buffer is an ordered list of events.  | 500ms |
 
-These properties are either controled via an options parameter passed to runProjections for general configurations (like resultstream name) or they are directly passed to the functions whichs behaviour is altered by the configuration parameter.
+These properties are either controlled via an options parameter passed to runProjections for general configurations (like resultstream name) or they are directly passed to the functions whichs behaviour is altered by the configuration parameter.
 
 ### Default Options
 If you just want the default behaviour of projections pass defaultOptions to runProjections:
